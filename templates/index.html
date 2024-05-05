@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}WebBazaarHome - Page{% endblock %}
+{% block content %}
+<div class="category1 mt-4 pt-1 ml-5 mr-5 pt-3 mb-1" style="background-color: #A47551; height: 500px;">
+    {%for product in products%} 
+    <p class="pb-1  ml-4" style="height: 27px; font-size: 22px;">The best form category {{product.category}}</p>
+
+    <div class="card ml-4  " style="width: 18rem; ">
+        <img class="card-img-top " src="{{product.photo_path}}" alt="Card image cap">
+        <div class="card-body  ">
+          <h5 class="card-title text-center ">{{product.price}}</h5>
+          <p class="card-text text-center ">{{product.name}}</p>
+          <!-- <p class="card-text text-center">{{product.description}}</p> -->
+
+        </div>
+      </div>
+    {%endfor%}
+
+
+</div>
+
+
+
+
+{% endblock %}
