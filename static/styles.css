@@ -1,4 +1,5 @@
-#navBarSearchForm input[type=text]{width:830px !important;}
-.category1 {
-    background-color: aliceblue;
+.carousel-control-prev, 
+.carousel-control-next{
+    top: 50%;
+    bottom: 50%;
 }

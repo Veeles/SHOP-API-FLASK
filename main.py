@@ -24,10 +24,16 @@ with app.app_context():
     db.create_all()
 @app.route('/')
 def index_page():
-    products = Product.query.filter_by(category='garden')[:10]
-    print(products)
+    products = Product.query.all()
+    products1 = Product.query.filter_by(category='garden')[:10]
+    products2 = Product.query.filter_by(category='art')[:10]
+    products3 = Product.query.order_by(Product.price.asc()).all()
+    carousel_items = [products[i:i+3] for i in range(0, len(products), 3)]
 
-    return render_template('index.html', products=products )
+
+    print(products1)
+
+    return render_template('index.html', products1=products1, products2=products2, products3=products3, carousel_items=carousel_items, products4=products3 )
 
 
 if __name__ == "__main__":
