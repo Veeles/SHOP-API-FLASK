@@ -3,3 +3,6 @@
     top: 50%;
     bottom: 50%;
 }
+.card:hover {
+    background-color: #9c9a98; /* Kolor niebieski */
+}
