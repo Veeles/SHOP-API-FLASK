@@ -1,13 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
+from datetime import timedelta
+import os
 
-
+basket_products = []
 app = Flask(__name__)
 Bootstrap(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db = SQLAlchemy(app)
-
+app.secret_key = os.urandom(24)  # Sekretny klucz używany do szyfrowania sesji
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +31,8 @@ def index_page():
     products2 = Product.query.filter_by(category='kids')[:10]
     products3 = Product.query.order_by(Product.price.asc()).all()
     carousel_items = [products[i:i+3] for i in range(0, len(products), 3)]
+    if 'cartt' not in session:
+        session['cartt'] = []
 
 
     print(products1)
@@ -52,7 +56,31 @@ def product(id):
     print(id)
     product = Product.query.filter_by(id=id).first()
     print(product)
+    if 'cartt' not in session:
+        session['cartt'] = []
     return render_template("product.html", product=product)
+
+@app.route("/basket", methods=['GET'])
+def basket():
+    if 'cartt' not in session:
+        session['cartt'] = []
+    global basket_products
+    products = []
+    print("hejop")
+    product_id = request.args.get('product_number')
+    basket_products.append(product_id) 
+    if product_id is not None:
+        product_id = str(product_id)
+        cart = session['cartt']
+        cart.append(product_id)
+        session['cartt'] = cart
+        for one_cart in cart:
+            print(one_cart)
+            one_product = Product.query.filter_by(id=one_cart).first()
+            products.append(one_product)
+            
+        
+    return render_template("basket.html", products_id=basket_products, cart=cart, products=products)
 if __name__ == "__main__":
     app.run()
 
