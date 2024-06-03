@@ -19,6 +19,8 @@
                         <div class="cards-wrapper">
                             <div class="card mr-4" style="width: 18rem;">
                                 <img src="{{ product.photo_path }}" class="card-img-top" alt="{{ product.name }}" height="250">
+                                <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
+
                                 <div class="card-body">
                                     <h5 class="card-title">{{ product.price }}</h5>
                                     <p class="card-text">{{ product.name }}</p>
@@ -55,6 +57,8 @@
                         <div class="cards-wrapper">
                             <div class="card mr-4" style="width: 18rem;">
                                 <img src="{{ product.photo_path }}" class="card-img-top" alt="{{ product.name }}" height="250">
+                                <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
+
                                 <div class="card-body">
                                     <h5 class="card-title">{{ product.price }}</h5>
                                     <p class="card-text">{{ product.name }}</p>
@@ -117,10 +121,11 @@
                           <div class="cards-wrapper">
                               <div class="card mr-5" style="width: 18rem;"  >
                                   <img src="{{ product.photo_path }}" class="card-img-top" alt="{{ product.name }}" height="250">
+                                  <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
+
                                   <div class="media-body">
                                       <h5 class="card-title">{{ product.price }}</h5>
                                       <p class="card-text">{{ product.name }}</p>
-                                      <a href="#" class="stretched-link"></a>
                                   </div>
                               </div>
                           </div>

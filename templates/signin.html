@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}WebBazaarHome - Page{% endblock %}
+{% block content %}
+
+<style>
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+ 
+    .form-control {
+        width: 300px;
+        margin: 0 auto;
+    }
+    
+</style>
+    <div class="container">
+        <div class="mx-auto" style="max-width: 400px;">
+            <h1 class="text-center mb-4">Sign Up</h1> 
+            <form method="post" action="{{url_for('signin')}}" class="text-center"> 
+                {{ form.hidden_tag() }} 
+                <div class="form-group mb-4">
+                    <label for="name">{{ form.name.label }}</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+                <div class="form-group mb-4">
+                    <label for="password">{{ form.password.label }}</label>
+                    {{ form.password(class="form-control") }}
+                </div>
+                <div class="form-group mb-4">
+                    <label for="confirm">{{ form.confirm.label }}</label>
+                    {{ form.confirm(class="form-control") }}
+                </div>
+                <div class="form-group mb-4">
+                    <label for="email">{{ form.email.label }}</label>
+                    {{ form.email(class="form-control") }}
+                </div>
+                <div class="form-group mb-4">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <span class="border-bottom  border-primary"></span>
+
+                </div>
+            </form>
+            <span class="border-bottom  border-primary"></span>
+            <h6 class="text-center">Do you have account? <a href="url_for('login')">Login</a></h6>
+            <span class="border-bottom  border-primary"></span>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

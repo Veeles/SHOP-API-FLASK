@@ -46,9 +46,12 @@
                     <img src="/static/minus_icon.png" id="minus-icon" style="cursor: pointer;">
                 </div>
                 <div class="col">
-                    <form>
+                    <form method="get" id="formm" action="{{ url_for('basket') }}">
+                        
+
                         <div class="form-group ml-2">
-                            <input type="text" class="form-control text-center" id="quantity-input" placeholder="How much?" style="width: 70px; height: 48px;" value="1">
+                            <input type="text" name="piec" class="form-control text-center" id="quantity-input" placeholder="How much?" style="width: 70px; height: 48px;" value="1"  >
+                            <input type="hidden" name="product_number" value="{{ product.id }}">
                         </div>
                     </form>
                 </div>
@@ -56,7 +59,7 @@
                     <img src="/static/plus_icon.png" id="plus-icon" style="cursor: pointer;">
                 </div>
                 </div>
-            <button type="button" class="btn btn-danger mb-3 btn-lg mt-3" style="width: 250px;" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
+            <button type="submit" form="formm" class="btn btn-danger mb-3 btn-lg mt-3" style="width: 250px;" id="add-to-cart-button" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
             <button type="button" class="btn btn-danger  btn-lg" style="width: 250px;">Buy Now</button>
 
         </div>
@@ -107,4 +110,5 @@
         });
     });
 </script>
+
   {%endblock%}

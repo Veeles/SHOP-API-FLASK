@@ -1,9 +1,19 @@
 from flask import Flask, render_template, request, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_utils import EmailType, PasswordType
 from datetime import timedelta
 import os
+from forms import SignUpForm, LoginForm
+from werkzeug.security import generate_password_hash 
+from passlib.hash import sha256_crypt
+from passlib.context import CryptContext
+from sqlalchemy.exc import IntegrityError
 
+crypt_context = CryptContext(
+    schemes=["bcrypt", "sha256_crypt"],
+    deprecated=["auto"],
+)
 basket_products = []
 app = Flask(__name__)
 Bootstrap(app)
@@ -21,6 +31,13 @@ class Product(db.Model):
     photo_path = db.Column(db.String(100), nullable=False)
 
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(450), nullable=False)
+    email = db.Column(EmailType, unique=True)
+
+    
 
 with app.app_context():
     db.create_all()
@@ -33,6 +50,8 @@ def index_page():
     carousel_items = [products[i:i+3] for i in range(0, len(products), 3)]
     if 'cartt' not in session:
         session['cartt'] = []
+    if 'pieces' not in session:
+        session['pieces'] = []
 
 
     print(products1)
@@ -58,29 +77,91 @@ def product(id):
     print(product)
     if 'cartt' not in session:
         session['cartt'] = []
+    if 'pieces' not in session:
+        session['pieces'] = []    
     return render_template("product.html", product=product)
 
-@app.route("/basket", methods=['GET'])
+@app.route("/basket", methods=['GET', 'POST'])
 def basket():
     if 'cartt' not in session:
         session['cartt'] = []
+    if 'pieces' not in session:
+        session['pieces'] = []
     global basket_products
     products = []
     print("hejop")
     product_id = request.args.get('product_number')
+    pieces = request.args.get("piec")
+    print(pieces)
     basket_products.append(product_id) 
     if product_id is not None:
         product_id = str(product_id)
+        pieces = str(pieces)
         cart = session['cartt']
+        piece = session['pieces']
         cart.append(product_id)
+        piece.append(pieces)
         session['cartt'] = cart
+        session['pieces'] = piece
+        print(pieces)
+        cartt_len = len(session['cartt'])
         for one_cart in cart:
             print(one_cart)
             one_product = Product.query.filter_by(id=one_cart).first()
-            products.append(one_product)
+            if one_product not in products:
+                products.append(one_product)
+    elif product_id is None:
+        cart = session['cartt']
+
+        for one_cart in cart:
+            print(one_cart)
+            one_product = Product.query.filter_by(id=one_cart).first()
+            if one_product not in products:
+                products.append(one_product)
+    # full_price = 0
+    # for product in products:
+    #     full_price =+ product.price
+    #     return full_price
+
+    # print(full_price)        
             
         
-    return render_template("basket.html", products_id=basket_products, cart=cart, products=products)
+    return render_template("basket.html", products_id=basket_products, products=products, cartt=session['cartt'])
+
+@app.route("/my-webbazaar")
+def mywebbazaar():
+    sign_up_form = SignUpForm()
+    login_form = LoginForm()
+    print("dupa")
+    return render_template("my_shop.html", form=sign_up_form)
+
+@app.route('/login')
+def login():
+    login_form = LoginForm()
+    
+    return render_template('login.html', form=login_form)
+
+@app.route('/signin',  methods=['GET', 'POST'])
+def signin():
+    sign_form = SignUpForm()
+    if sign_form.validate_on_submit(): 
+        name = sign_form.name.data 
+        password = sign_form.password.data 
+        email = sign_form.email.data 
+        hashed_password = generate_password_hash(password)
+        try:
+            new = User(name=name, password=hashed_password, email=email)
+            db.session.add(new)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()  # Przywróć sesję do stanu przed operacją dodawania użytkownika
+            return "Ten adres e-mail już istnieje, proszę wybrać inny."
+       
+
+
+
+        return f'Name: {name} < br > Password: {hashed_password} <br > Remember me: {email}'
+    return render_template('signin.html', form=sign_form)
 if __name__ == "__main__":
     app.run()
 
