@@ -26,6 +26,9 @@
         </div>
     </div>
 </div> -->
+{% if current_user.is_authenticated %}
+<h1>hiiiiiiiiiiiiiiiiii</h1>
+{% endif %}
 <div class="container">
     <div class="row">
       <div class="col">
@@ -59,9 +62,13 @@
                     <img src="/static/plus_icon.png" id="plus-icon" style="cursor: pointer;">
                 </div>
                 </div>
+                {% if current_user.is_authenticated %}
             <button type="submit" form="formm" class="btn btn-danger mb-3 btn-lg mt-3" style="width: 250px;" id="add-to-cart-button" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
             <button type="button" class="btn btn-danger  btn-lg" style="width: 250px;">Buy Now</button>
-
+                {%else%}
+            <button type="submit" form="formm" class="btn btn-danger mb-3 btn-lg mt-3" style="width: 250px;" id="add-to-cart-button" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
+            <button type="button" class="btn btn-danger  btn-lg" style="width: 250px;" onclick="window.location.href='{{ url_for('login', product_number=product.id) }}'">Buy Now</button>    
+            {% endif %}
         </div>
     </div>
       

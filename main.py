@@ -1,14 +1,22 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import EmailType, PasswordType
 from datetime import timedelta
 import os
 from forms import SignUpForm, LoginForm
-from werkzeug.security import generate_password_hash 
+from werkzeug.security import generate_password_hash, check_password_hash
 from passlib.hash import sha256_crypt
 from passlib.context import CryptContext
 from sqlalchemy.exc import IntegrityError
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import stripe
+
+
+
+
+login_manager = LoginManager()
+
 
 crypt_context = CryptContext(
     schemes=["bcrypt", "sha256_crypt"],
@@ -20,6 +28,7 @@ Bootstrap(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db = SQLAlchemy(app)
 app.secret_key = os.urandom(24)  # Sekretny klucz używany do szyfrowania sesji
+login_manager.init_app(app)
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,7 +40,7 @@ class Product(db.Model):
     photo_path = db.Column(db.String(100), nullable=False)
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     password = db.Column(db.String(450), nullable=False)
@@ -41,6 +50,36 @@ class User(db.Model):
 
 with app.app_context():
     db.create_all()
+
+YOUR_DOMAIN = 'http://127.0.0.1:5000'
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    'price':'{{PRICE_ID}}',
+                    'quantity':'{{HOW_MUCH}}',
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success.html',
+            cencel_url=YOUR_DOMAIN + '/cancel.html',
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index_page'))
 @app.route('/')
 def index_page():
     products = Product.query.all()
@@ -128,16 +167,41 @@ def basket():
         
     return render_template("basket.html", products_id=basket_products, products=products, cartt=session['cartt'])
 
+@app.route("/Buy-now")
+@login_required
+def buynow():
+    return render_template('buy.html')
+
 @app.route("/my-webbazaar")
 def mywebbazaar():
     sign_up_form = SignUpForm()
     login_form = LoginForm()
     print("dupa")
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     return render_template("my_shop.html", form=sign_up_form)
 
-@app.route('/login')
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     login_form = LoginForm()
+    if login_form.validate_on_submit(): 
+        password = login_form.password.data 
+        email = login_form.email.data 
+        hashed_password = generate_password_hash(password)
+        print("muu")
+        user = User.query.filter_by(email=email).first()
+        
+        if user and check_password_hash(user.password, password):
+            login_user(user, remember=True)
+            print('hiiiiiii')
+            print(current_user.name)
+            return render_template('test.html')
+        elif not user:
+            return 'bad email'
+        elif user and not check_password_hash(user.password, password):
+            return "bad password"
+    print("sram")
     
     return render_template('login.html', form=login_form)
 
@@ -153,6 +217,7 @@ def signin():
             new = User(name=name, password=hashed_password, email=email)
             db.session.add(new)
             db.session.commit()
+            login_user(new)
         except IntegrityError:
             db.session.rollback()  # Przywróć sesję do stanu przed operacją dodawania użytkownika
             return "Ten adres e-mail już istnieje, proszę wybrać inny."

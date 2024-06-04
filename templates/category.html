@@ -28,15 +28,23 @@
 
                 </div>
                 <span class="border-left"></span>
-
+              
                 <div class="col-md-3">
                     <div class="card-body">
                       <h5 class="card-title ml-5 pl-3 mt-3 mb-4">{{ product.price }}</h5>
-                      <button type="button" class="btn btn-outline-danger ml-1 mb-4 " style="width: 200px;">Add to Card</button>
-                      <button type="button" class="btn btn-outline-danger ml-1" style="width: 200px;">Buy Now</button>
+                      <button type="submit" form="formm" class="btn btn-outline-danger ml-1 mb-4" style="width: 200px;" id="add-to-cart-button" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
+                      <!-- <button type="button" class="btn btn-outline-danger ml-1 mb-4 " style="width: 200px;" onclick="window.location.href='{{ url_for('basket', product_number=product.id, pieces=1) }}'" >Add to Card</button> -->
+                      <button type="button" class="btn btn-outline-danger ml-1 mb-4" style="width: 200px;" onclick="window.location.href='{{ url_for('login', product_number=product.id) }}'">Buy Now</button>
                         
                     </div>
                 </div>
+                <form method="get" id="formm" action="{{ url_for('basket') }}">
+
+                <div class="form-group ml-2 invisible">
+                    <input type="text" name="piec" class="form-control text-center" id="quantity-input" placeholder="How much?" style="width: 70px; height: 48px;" value="1"  >
+                    <input type="hidden" name="product_number" value="{{ product.id }}">
+                </div>
+                </form>
             </div>
             <span class="border-bottom"></span>
         </div>

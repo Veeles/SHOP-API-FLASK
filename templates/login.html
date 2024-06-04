@@ -19,8 +19,8 @@
 </style>
     <div class="container">
         <div class="mx-auto" style="max-width: 400px;">
-            <h1 class="text-center mb-4">Sign Up</h1> 
-            <form method="post" action="/" class="text-center"> 
+            <h1 class="text-center mb-4">Login </h1> 
+            <form method="post" action="{{url_for('login')}}" class="text-center"> 
                 {{ form.hidden_tag() }} 
                 <div class="form-group mb-4">
                     <label for="email">{{ form.email.label }}</label>
@@ -44,6 +44,9 @@
             <span class="border-bottom  border-primary"></span>
 
         </div>
+        {% if current_user.is_authenticated %}
+<h1>hiiiiiiiiiiiiiiiiii</h1>
+{% endif %}
     </div>
 
 
