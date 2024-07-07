@@ -22,7 +22,7 @@
                                 <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
 
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ product.price }}</h5>
+                                    <h5 class="card-title">{{ product.formatted_price }}</h5>
                                     <p class="card-text">{{ product.name }}</p>
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                                 <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
 
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ product.price }}</h5>
+                                    <h5 class="card-title">{{ product.formatted_price}}</h5>
                                     <p class="card-text">{{ product.name }}</p>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                                   <a href="{{url_for('product', id = product.id)}}" class="stretched-link"></a>
 
                                   <div class="media-body">
-                                      <h5 class="card-title">{{ product.price }}</h5>
+                                      <h5 class="card-title">{{ product.formatted_price }}</h5>
                                       <p class="card-text">{{ product.name }}</p>
                                   </div>
                               </div>

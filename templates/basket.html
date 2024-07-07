@@ -2,6 +2,11 @@
 
 {% block title %}WebBazaarHome - Page{% endblock %}
 {% block content %}
+<style>
+.price {
+    display: inline-block;
+    width: 140%; 
+}</style>
 <div class="container">
   <div class="row">
       <div class="col">
@@ -21,7 +26,7 @@
             <div class="col mt-4 mr-2">
                 <form>
                     <div class="form-group">
-                        <input type="text" class="form-control text-center" id="quantity-input-{{ loop.index }}" placeholder="How much?" style="width: 70px; height: 48px;" value="{{ session['pieces'][loop.index0] }}">
+                        <input type="text" class="form-control text-center" id="quantity-input-{{ loop.index }}" placeholder="How much?" style="width: 70px; height: 48px;" value="{{session.pieces[loop.index0] }}">
                     </div>
                 </form>
             </div>
@@ -29,7 +34,7 @@
                 <img src="/static/plus_icon.png" height="50px" width="50px" id="plus-icon-{{ loop.index }}" style="cursor: pointer;">
             </div>
             <div class="col mt-4 pt-2">
-                <h5>{{ product.price }}</h5>
+                <h5 class="price">{{ product.formatted_price }}</h5>
             </div>
             <div class="col mt-4 pt-2">
                 <img src="/static/delete_icon.png" height="25px" width="25px">
@@ -67,10 +72,10 @@
       </div>
       <div class="col">
         <div class="category1 mt-4 pt-1 ml-2 mr-1 pt-3 mb-4 " style="background-color: #A47551; width: 350px; height: 400px;">
-            <h4 class="pt-3 mb-5 ml-2" style="color: white;">With order: </h4>
+            <h4 class="pt-3 mb-5 ml-2" style="color: white;">With order: {{final_price}}</h4>
             <span class="border-bottom border-primary"></span>
             {% if current_user.is_authenticated %}
-            <button type="button" class="btn btn-danger  btn-lg ml-5" style="width: 250px;" >Buy Now</button>
+            <button type="button" class="btn btn-danger  btn-lg ml-5" style="width: 250px;"  onclick="window.location.href='{{ url_for('checkout', final_price_new = final_price_noformated) }}'" >Buy Now</button>
             {%else%}
             <button type="button" class="btn btn-danger  btn-lg ml-5" style="width: 250px;" disabled>Buy Now</button>
             {%endif%}
