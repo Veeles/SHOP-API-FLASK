@@ -36,7 +36,6 @@
                     <div class="card-body">
                       <h5 class="card-title ml-5 pl-3 mt-3 mb-4"><span class="price">{{ product.formatted_price }}</span></h5>
                       <button type="submit" form="formm" class="btn btn-outline-danger ml-1 mb-4" style="width: 200px;" id="add-to-cart-button" onclick="window.location.href='{{ url_for('basket', product_number=product.id) }}'">Add to Cart</button>
-                      <!-- <button type="button" class="btn btn-outline-danger ml-1 mb-4 " style="width: 200px;" onclick="window.location.href='{{ url_for('basket', product_number=product.id, pieces=1) }}'" >Add to Card</button> -->
                       <button type="button" class="btn btn-outline-danger ml-1 mb-4" style="width: 200px;" onclick="window.location.href='{{ url_for('login', product_number=product.id) }}'">Buy Now</button>
                         
                     </div>

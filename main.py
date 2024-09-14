@@ -215,9 +215,9 @@ def login():
          
             return render_template('test.html')
         elif not user:
-            return 'bad email'
+            return 'wrong email'
         elif user and not check_password_hash(user.password, password):
-            return "bad password"
+            return "wrong password"
     
     return render_template('login.html', form=login_form)
 
@@ -235,13 +235,13 @@ def signin():
             db.session.commit()
             login_user(new)
         except IntegrityError:
-            db.session.rollback()  # Przywróć sesję do stanu przed operacją dodawania użytkownika
-            return "Ten adres e-mail już istnieje, proszę wybrać inny."
+            db.session.rollback()
+            return "This email address already exists, please select another one."
        
 
 
 
-        return f'Name: {name} < br > Password: {hashed_password} <br > Remember me: {email}'
+        
     return render_template('signin.html', form=sign_form)
 
 
